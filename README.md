@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project, developed as part of [Course Name] at [University Name], implements JMessage, an end-to-end encrypted instant messaging system. The project consists of two main components:
+This project, developed as part of Practical Cryptographic Systems at Johns Hopkins University, implements JMessage, an end-to-end encrypted instant messaging system. The project consists of two main components:
 
 1. A secure messaging client and server implementation
 2. A demonstration of a padding oracle attack against the system
@@ -11,7 +11,6 @@ This project, developed as part of [Course Name] at [University Name], implement
 
 - `jmessage_client.go`: The main client implementation
 - `jmessage_server.py`: The server implementation (Python/Flask)
-- `attack.go`: Implementation of the padding oracle attack
 
 ## Features
 
