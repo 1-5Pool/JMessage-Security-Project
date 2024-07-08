@@ -40,15 +40,57 @@ Key aspects of the attack:
 3. Uses incremental username registration to shift the decryption "window"
 4. Observes read receipt behavior to infer successful decryption
 
+### Detailed Exploitation Process
+
+1. **Ciphertext Modification**: 
+   The attack starts by modifying the first byte of the sender's username in the ciphertext (e.g., changing 'charlie' to 'bharlie').
+
+2. **CRC32 Checksum Manipulation**:
+   The CRC32 checksum must be updated to match the modified ciphertext. This is where the linearity property of CRC32 is exploited.
+
+   Let:
+   - A be the original plaintext
+   - B be the modification to the plaintext
+   - C be a sequence of all zeros (0x00) of the same length as A
+
+   The linearity property of CRC32 states that:
+   
+   CRC(A ⊕ B) = CRC(A) ⊕ CRC(B) ⊕ CRC(C)
+
+   Where ⊕ represents the XOR operation.
+
+   In our attack:
+   - CRC(A) is the original checksum (last 4 bytes of the ciphertext)
+   - CRC(B) is calculated for our modification
+   - CRC(C) is pre-computed (as it's always the same for a given message length)
+
+   The new checksum is calculated as: 
+   
+   New_Checksum = CRC(A) ⊕ CRC(B) ⊕ CRC(C)
+
+3. **Incremental Username Registration**:
+   To decrypt each byte of the message, we incrementally register new usernames (e.g., "mallory", "mallorya", "malloryaa", etc.). This shifts the position of the delimiter in the plaintext, allowing us to target different bytes of the message.
+
+4. **Padding Oracle Exploitation**:
+   For each byte:
+   - We modify the ciphertext and update the checksum
+   - Send the modified ciphertext to Alice
+   - Observe whether a read receipt is received
+   - If a read receipt is received, we've correctly guessed the byte
+   - If not, we try the next possible byte value
+
+5. **Message Reconstruction**:
+   As we correctly guess each byte, we reconstruct the original plaintext message.
 
 ## Installation
 
 1. Clone the repository:
+  git clone https://github.com/1-5Pool/JMessage-Security-Project/
 
-2. Install Go (for client and attack implementation):
+3. Install Go (for client and attack implementation):
 [Go Installation Instructions](https://golang.org/doc/install)
 
-3. Install Python and Flask (for server implementation):
+4. Install Python and Flask (for server implementation):
 
 ## Usage
 
