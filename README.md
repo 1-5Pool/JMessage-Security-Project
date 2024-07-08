@@ -1,0 +1,100 @@
+# JMessage: Secure Messaging System and Vulnerability Exploitation
+
+## Overview
+
+This project, developed as part of [Course Name] at [University Name], implements JMessage, an end-to-end encrypted instant messaging system. The project consists of two main components:
+
+1. A secure messaging client and server implementation
+2. A demonstration of a padding oracle attack against the system
+
+## Project Structure
+
+- `jmessage_client.go`: The main client implementation
+- `jmessage_server.py`: The server implementation (Python/Flask)
+- `attack.go`: Implementation of the padding oracle attack
+
+## Features
+
+### Secure Messaging System
+
+- End-to-end encryption using ECDH key exchange and ChaCha20 cipher
+- Digital signatures using ECDSA
+- User registration and authentication
+- Public key distribution
+- Message sending and receiving
+- File attachment support
+
+### Vulnerability Exploitation
+
+- Implementation of a padding oracle attack
+- Exploitation of CRC32 checksum linearity
+- Incremental username registration technique for message decryption
+
+
+## Attack Description
+
+The implemented attack exploits a vulnerability in the JMessage system's handling of decryption errors and read receipts. It uses a padding oracle technique, combined with manipulation of the CRC32 checksum, to decrypt intercepted messages without knowledge of the recipient's private key.
+
+Key aspects of the attack:
+1. Modifies the sender's username in the ciphertext
+2. Exploits the linearity property of CRC32 for checksum updates
+3. Uses incremental username registration to shift the decryption "window"
+4. Observes read receipt behavior to infer successful decryption
+
+
+## Installation
+
+1. Clone the repository:
+
+2. Install Go (for client and attack implementation):
+[Go Installation Instructions](https://golang.org/doc/install)
+
+3. Install Python and Flask (for server implementation):
+
+## Usage
+
+### Running the Server
+
+python jmessage_server.py
+
+### Running the Client
+
+go run jmessage_client.go -username <username> -password <password>
+
+### Performing the Attack
+
+To perform the attack, follow these steps:
+
+1. Register Alice and run it in headless mode:
+
+go run jmessage_client.go -reg --headless
+
+2. Register with Charlie and send a message:
+
+go run jmessage_client.go -reg --username "charlie"
+
+Then, send a message to Alice:
+
+send alice
+<Msg>
+
+This creates a `cipher.txt` file in the current directory. Assuming the attacker has gotten hold of this ciphertext using MITM.
+
+3. Use this file and run the command below:
+
+go run jmessage_client.go -attack <file-location-cipher.txt> -victim alice -reg -username="charliea"
+
+
+
+This process sets up the necessary accounts, generates an intercepted message, and then performs the padding oracle attack to decrypt the message.
+
+
+## Ethical Considerations
+
+This project is for educational purposes only. The vulnerabilities demonstrated should not be exploited in real-world systems without explicit permission. Always respect privacy and adhere to ethical guidelines in cybersecurity research and practice.
+
+
+## Acknowledgements
+
+- Matthew Green 
+- Johns Hopkins University
